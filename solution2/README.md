@@ -138,6 +138,7 @@ aws s3 cp php-sample.zip s3://$NAME_BUCKET
 You should empty the S3 Bucket and all versions
 
 ```
+chmod +x delete-all-object-version.sh
 ./delete-all-object-version.sh $NAME_BUCKET
 
 ```
