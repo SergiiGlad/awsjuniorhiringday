@@ -33,7 +33,9 @@ cd solution1
 [You should provide own key pair to connect Amazon EC2 using ssh](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
 ```
-aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > ~/.ssh/MyKeyPair.pem
+aws ec2 create-key-pair --key-name MyKeyPair \
+--query 'KeyMaterial' \
+--output text > ~/.ssh/MyKeyPair.pem
 
 chmod 400 ~/.ssh/MyKeyPair.pem
 
