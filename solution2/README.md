@@ -147,7 +147,7 @@ You should empty the S3 Bucket and all versions
 
 ```
 chmod +x delete-all-object-version.sh
-./delete-all-object-version.sh $BUCKET-NAME
+./delete-all-object-version.sh $BUCKET_NAME
 
 ```
 
