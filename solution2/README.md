@@ -50,7 +50,9 @@ NAME_BUCKET | NAME_BUCKET | S3 ArtifactStore
 [You should provide own key pair to connect Amazon EC2 using ssh](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
 ```
-aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > ~/.ssh/MyKeyPair.pem
+aws ec2 create-key-pair --key-name MyKeyPair \
+--query 'KeyMaterial' \
+--output text > ~/.ssh/MyKeyPair.pem
 
 chmod 400 ~/.ssh/MyKeyPair.pem
 ```
@@ -102,7 +104,10 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[0].Outputs[1].OutputValue" --output text)
+BUCKET_NAME=$(aws cloudformation describe-stacks \
+--stack-name app-site \
+--query "Stacks[0].Outputs[1].OutputValue" \
+--output text)
 
 ```
 
@@ -121,7 +126,10 @@ Confirm subscription on AWS Pipeline and check EmailAddress notification status
 Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for Linux or copy link to browser for other OS ( Link to reference Balancer DNS name)
 
 ```
-open "http://$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[0].Outputs[0].OutputValue" --output text)"
+open "http://$(aws cloudformation describe-stacks \
+--stack-name app-site \
+--query "Stacks[0].Outputs[0].OutputValue" \
+--output text)"
 
 ```
 
