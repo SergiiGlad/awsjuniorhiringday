@@ -52,7 +52,7 @@ Start the zero-downtime deployment
 Change OperatorEMail value on your email address
 
 ```
-aws cloudformation update-stack --stack-name demo-site \
+aws cloudformation create-stack --stack-name demo-site \
 --template-body file://site-deployment-template.json \
 --parameters \
 ParameterKey=KeyName,ParameterValue=MyKeyPair \
