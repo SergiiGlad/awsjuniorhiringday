@@ -33,7 +33,7 @@ cd solution1
 [You should provide own key pair to connect Amazon EC2 using ssh](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
 ```
-aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > /Users/sgladc/.ssh/MyKeyPair.pem
+aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > ~/.ssh/MyKeyPair.pem
 
 chmod 400 /Users/sgladc/.ssh/MyKeyPair.pem
 
@@ -85,7 +85,7 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-NAME_BUCKET=$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[].Outputs[0].OutputValue" --output text)
+NAME_BUCKET=$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[0].Outputs[1].OutputValue" --output text)
 
 ```
 
@@ -120,6 +120,7 @@ aws s3 cp app.zip s3://$NAME_BUCKET
 
 You should empty the S3 Bucket all versions
 ```
+chmod +x delete-all-object-version.sh
 ./delete-all-object-version.sh $NAME_BUCKET
 
 ```
@@ -137,6 +138,6 @@ Delete the Key pair and Key file
 ```
 aws ec2 delete-key-pair --key-name MyKeyPair
 
-rm -f /Users/sgladc/.ssh/MyKeyPair.pem
+rm -f ~/.ssh/MyKeyPair.pem
 
 ```
