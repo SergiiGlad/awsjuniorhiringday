@@ -858,7 +858,35 @@
                                }
                            ]
                        },
+                       {
+            "Name":"LambdaStage",
+            "Actions":[
+              {
+                "InputArtifacts":[
 
+                ],
+                "Name":"MyLambdaAction",
+                "ActionTypeId":{
+                  "Category":"Invoke",
+                  "Owner":"AWS",
+                  "Version":"1",
+                  "Provider":"Lambda"
+                },
+                "OutputArtifacts":[
+
+                ],
+                "Configuration":{
+                  "FunctionName":{
+                    "Ref":"CodePipelineLambdaTest"
+                  },
+                  "UserParameters":{
+                   "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]
+                  }
+                },
+                "RunOrder":1
+              }
+            ]
+          },
                        {
                  "Name": "Deploy",
                            "Actions": [
@@ -897,7 +925,97 @@
        ]
 
        }
-     }
+     },
+
+     "LambdaCodePipelineExecutionPolicy":{
+         "DependsOn":[
+           "CodePipelineLambdaRole"
+         ],
+         "Type":"AWS::IAM::Policy",
+         "Properties":{
+           "PolicyName":"LambdaRolePolicy",
+           "Roles":[
+             {
+               "Ref":"CodePipelineLambdaRole"
+             }
+           ],
+           "PolicyDocument":{
+             "Version":"2012-10-17",
+             "Statement":[
+               {
+                 "Effect":"Allow",
+                 "Action":[
+                   "logs:*"
+                 ],
+                 "Resource":[
+                   "arn:aws:logs:*:*:*"
+                 ]
+               },
+               {
+                 "Effect":"Allow",
+                 "Action":[
+                   "codepipeline:PutJobSuccessResult",
+                   "codepipeline:PutJobFailureResult"
+                 ],
+                 "Resource":[
+                   "*"
+                 ]
+               }
+             ]
+           }
+         }
+       },
+
+     "CodePipelineLambdaRole":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+           "AssumeRolePolicyDocument":{
+             "Version":"2012-10-17",
+             "Statement":[
+               {
+                 "Effect":"Allow",
+                 "Principal":{
+                   "Service":[
+                     "lambda.amazonaws.com"
+                   ]
+                 },
+                 "Action":[
+                   "sts:AssumeRole"
+                 ]
+               }
+             ]
+           },
+           "Path":"/"
+         }
+       },
+
+       "CodePipelineLambdaTest":{
+         "Type":"AWS::Lambda::Function",
+         "DependsOn":[
+           "CodePipelineLambdaRole",
+           "LambdaCodePipelineExecutionPolicy"
+         ],
+         "Properties":{
+           "Code":{
+             "S3Bucket":{
+               "Ref":"SourceBucket"
+             },
+             "S3Key":    "lambda.zip"
+           },
+           "Role":{
+             "Fn::GetAtt":[
+               "CodePipelineLambdaRole",
+               "Arn"
+             ]
+           },
+           "Description":"Validate a website URL",
+           "Timeout":20,
+           "Handler":"index.handler",
+           "Runtime":"nodejs10.x",
+           "MemorySize":128
+         }
+       }
+
 
 
 
@@ -907,10 +1025,6 @@
     "URL" : {
       "Description" : "The URL of the website",
       "Value" :  { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ] }
-    },
-    "S3Bucket": {
-      "Description":"S3 Bucket for site",
-      "Value" : {"Ref" : "SourceBucket"}
     }
   }
 }

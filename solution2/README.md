@@ -36,7 +36,7 @@ cd solution2
 
 Name | Defaults | Notes
 --- | --- | ---
-<NAME_STACK> | demo-site | CloudFormation Stack Name
+<NAME_STACK> | app-site | CloudFormation Stack Name
 <REGION> | us-east-1 | AWS Region
 <APP_NAME> | php-sample.zip | Source S3 Bucket
 <INSTANCE> | t2.micro | EC2 type
@@ -63,13 +63,14 @@ aws cloudformation validate-template --template-body file://site-cfn-template.js
 ```
 
 Create pipeline stack with CloudFormation
+Change EmailAddress value on your email address
 
 ```
-aws cloudformation create-stack --stack-name demo-site \
+aws cloudformation create-stack --stack-name app-site \
 --template-body file://site-cfn-template.json \
 --parameters \
 ParameterKey=KeyName,ParameterValue=MyKeyPair \
-ParameterKey=EmailAddress,ParameterValue=gladseo@gmail.com \
+ParameterKey=EmailAddress,ParameterValue=nobody@gmail.com \
 --capabilities CAPABILITY_IAM
 
 ```
@@ -77,13 +78,13 @@ ParameterKey=EmailAddress,ParameterValue=gladseo@gmail.com \
 Wait until CloudFormation stack is created
 
 ```
-aws cloudformation wait stack-create-complete --stack-name demo-site
+aws cloudformation wait stack-create-complete --stack-name app-site
 
 ```
 
 Information about created stacks
 ```
-aws cloudformation describe-stacks --stack-name demo-site
+aws cloudformation describe-stacks --stack-name app-site
 
 ```
 
@@ -101,14 +102,14 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-NAME_BUCKET=$(aws resourcegroupstaggingapi get-resources --resource-type-filters="s3" | jq '.ResourceTagMappingList[].ResourceARN' --raw-output |     sed -e 's/arn:aws:s3::://')
+BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[].Outputs[0].OutputValue" --output text)
 
 ```
 
 Create zip file and copy file to S3 bucket
 ```
 zip php-sample.zip -j site/*
-aws s3 cp php-sample.zip s3://$NAME_BUCKET
+aws s3 cp php-sample.zip s3://$BUCKET_NAME
 
 ```
 
@@ -120,7 +121,7 @@ Confirm subscription on AWS Pipeline and check EmailAddress notification status
 Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for Linux or copy link to browser for other OS ( Link to reference Balancer DNS name)
 
 ```
-open "http://$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[0].Outputs[0].OutputValue" --output text)"
+open "http://$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[].Outputs[1].OutputValue" --output text)"
 
 ```
 
@@ -144,8 +145,8 @@ You should empty the S3 Bucket and all versions
 Then remove CloudFormation stack
 
 ```
-aws cloudformation delete-stack --stack-name demo-site
+aws cloudformation delete-stack --stack-name app-site
 
-aws cloudformation wait stack-delete-complete --stack-name demo-site
+aws cloudformation wait stack-delete-complete --stack-name app-site
 
 ```

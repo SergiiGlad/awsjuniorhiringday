@@ -47,14 +47,13 @@ aws cloudformation validate-template --template-body file://site-deployment-temp
 ```
 
 Start the zero-downtime deployment
-Change OperatorEMail value on your email address
 
 ```
 aws cloudformation update-stack --stack-name demo-site \
 --template-body file://site-deployment-template.json \
 --parameters \
 ParameterKey=KeyName,ParameterValue=MyKeyPair \
-ParameterKey=OperatorEMail,ParameterValue=nobody@gmail.com \
+ParameterKey=OperatorEMail,ParameterValue=gladseo@gmail.com \
 --capabilities CAPABILITY_IAM
 
 ```
@@ -85,7 +84,7 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-NAME_BUCKET=$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[].Outputs[0].OutputValue" --output text)
+NAME_BUCKET=$(aws resourcegroupstaggingapi get-resources --resource-type-filters="s3" | jq '.ResourceTagMappingList[].ResourceARN' --raw-output |     sed -e 's/arn:aws:s3::://')
 
 ```
 
@@ -105,7 +104,6 @@ Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for L
 
 ```
 open "http://$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[0].Outputs[0].OutputValue" --output text)"
-
 ```
 
 ### Repeat to copy new version of site

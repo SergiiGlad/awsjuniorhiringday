@@ -387,6 +387,10 @@
     "URL" : {
       "Description" : "URL of the AWS Elastic Beanstalk Environment",
       "Value" : { "Fn::GetAtt" : ["sampleEnvironment", "EndpointURL"] }
+    },
+    "S3Bucket": {
+      "Description":"S3 Bucket for site",
+      "Value" : {"Ref" : "SourceBucket"}
     }
   }
 
