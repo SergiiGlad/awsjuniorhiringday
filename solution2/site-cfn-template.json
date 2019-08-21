@@ -1,0 +1,393 @@
+{
+  "Description":"Create automated web site release that deploy site files to group of EC2 with auto scaling group and email notification state pipeline.",
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+ "Parameters" : {
+    "KeyName" : {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the AWS Elastic Beanstalk instance",
+      "Type" : "String"
+    },
+
+    "EmailAddress": {
+        "Description": "Email Address",
+        "Default":"nobody@amazone.com",
+        "Type": "String"
+
+    },
+
+   "InstanceTypeParameter" : {
+       "Type" : "String",
+       "Default" : "t2.micro",
+      "AllowedValues" : ["t2.micro"],
+       "Description" : "WebServer EC2 instance type"
+     },
+
+     "SourceObjectKey": {
+         "Description": "S3 source artifact",
+         "Type": "String",
+         "Default": "php-sample.zip"
+     }
+
+
+
+  },
+
+
+   "Resources": {
+
+     "EventRule": {
+         "Type": "AWS::Events::Rule",
+         "Properties": {
+             "Description": "EventRule",
+             "EventPattern": {
+                 "source": [
+                     "aws.codepipeline"
+                 ],
+                 "detail-type": [
+                     "CodePipeline Pipeline Execution State Change"
+                 ],
+                 "detail": {
+                     "state": [
+                    "SUCCEEDED",
+                     "FAILED"
+                      ],
+                     "pipeline": [
+                        {"Ref":"AppPipeline"}
+                     ]
+                 }
+             },
+             "State": "ENABLED",
+             "Targets": [
+                 {
+                     "Arn": {
+                         "Ref": "MySNSTopic"
+                     },
+                     "Id": { "Ref" : "AWS::StackName" },
+                     "InputTransformer": {
+                         "InputTemplate": "\"The pipeline <pipeline> from account <account> has <state> at <at>.\"",
+                         "InputPathsMap": {
+                             "pipeline": "$.detail.pipeline",
+                             "state": "$.detail.state",
+                             "at": "$.time",
+                             "account": "$.account"
+                         }
+                     }
+                 }
+             ]
+         }
+     },
+
+
+
+     "MySNSTopic": {
+         "Type": "AWS::SNS::Topic",
+         "Properties": {
+          "TopicName": "JuniorHiringDay",
+             "Subscription": [
+                 {
+                     "Endpoint": {
+                         "Ref": "EmailAddress"
+                     },
+                     "Protocol": "email"
+                 }
+             ]
+         }
+     },
+
+
+
+
+          "SNSTopicPolicy": {
+          "Type": "AWS::SNS::TopicPolicy",
+          "Properties": {
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": "events.amazonaws.com"
+
+                  },
+                  "Action": [
+                    "SNS:Publish"
+                  ],
+                  "Resource": { "Ref": "MySNSTopic" }
+
+                }
+              ]
+            },
+            "Topics": [
+              {
+                "Ref": "MySNSTopic"
+              }
+            ]
+          }
+        },
+
+     "SourceBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "VersioningConfiguration": {
+                    "Status": "Enabled"
+                }
+            }
+        },
+
+
+        "CodePipelineArtifactStoreBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "Bucket": {
+                    "Ref": "SourceBucket"
+                },
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Sid": "AddPerm",
+                            "Effect": "Allow",
+                            "Principal": "*",
+                            "Action": [
+                              "s3:Get*",
+                              "s3:List*",
+                              "s3:PutObject"
+                                        ],
+                            "Resource": {
+                                "Fn::Join": [
+                                    "",
+                                    [
+                                        {
+                                            "Fn::GetAtt": [
+                                                "SourceBucket",
+                                                "Arn"
+                                            ]
+                                        },
+                                        "/", {
+                                            "Ref": "SourceObjectKey"
+                                        }
+                                    ]
+                                ]
+                            }
+
+                        }
+
+                    ]
+                }
+            }
+        },
+
+        "CodePipelineServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codepipeline.amazonaws.com"
+                                ]
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "AWS-CodePipeline-Service",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "elasticbeanstalk:*",
+                                        "ec2:*",
+                                        "elasticloadbalancing:*",
+                                        "autoscaling:*",
+                                        "cloudwatch:*",
+                                        "s3:*",
+                                        "sns:*",
+                                        "cloudformation:*"
+
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+
+    "sampleApplication": {
+      "Type": "AWS::ElasticBeanstalk::Application",
+      "Properties": {
+        "Description": "AWS Elastic Beanstalk Sample Application"
+      }
+    },
+    "sampleApplicationVersion": {
+      "Type": "AWS::ElasticBeanstalk::ApplicationVersion",
+      "Properties": {
+        "ApplicationName": { "Ref": "sampleApplication" },
+        "Description": "AWS ElasticBeanstalk Sample Application Version",
+        "SourceBundle": {
+          "S3Bucket": { "Fn::Join": [ "-", [ "elasticbeanstalk-samples", { "Ref": "AWS::Region" } ] ] },
+          "S3Key": {
+              "Ref": "SourceObjectKey"
+          }
+        }
+      }
+    },
+
+
+    "sampleConfigurationTemplate": {
+      "Type": "AWS::ElasticBeanstalk::ConfigurationTemplate",
+      "Properties": {
+        "ApplicationName": { "Ref": "sampleApplication" },
+        "Description": "AWS ElasticBeanstalk Sample Configuration Template",
+
+        "SolutionStackName": "64bit Amazon Linux 2018.03 v2.8.12 running PHP 7.2",
+        "OptionSettings": [
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MinSize",
+            "Value": "1"
+          },
+          {
+            "Namespace": "aws:autoscaling:asg",
+            "OptionName": "MaxSize",
+            "Value": "3"
+          },
+          {
+            "Namespace": "aws:elasticbeanstalk:environment",
+            "OptionName": "EnvironmentType",
+            "Value": "LoadBalanced"
+          },
+
+
+        	{
+            "Namespace" : "aws:autoscaling:launchconfiguration",
+            "OptionName" : "EC2KeyName",
+            "Value" : { "Ref" : "KeyName" }
+            },
+            {
+            "Namespace" : "aws:autoscaling:launchconfiguration",
+            "OptionName" : "InstanceType",
+            "Value" : { "Ref" : "InstanceTypeParameter" }
+          }
+
+        ]
+      }
+    },
+
+
+    "sampleEnvironment": {
+      "Type": "AWS::ElasticBeanstalk::Environment",
+      "Properties": {
+        "ApplicationName": { "Ref": "sampleApplication" },
+        "Description": "AWS ElasticBeanstalk Sample Environment",
+        "TemplateName": { "Ref": "sampleConfigurationTemplate" },
+        "VersionLabel": { "Ref": "sampleApplicationVersion" }
+
+  	  }
+
+    },
+
+
+    "AppPipeline": {
+    "Type": "AWS::CodePipeline::Pipeline",
+    "Properties": {
+          "Name": "demoPipeline",
+          "RoleArn": {
+                    "Fn::GetAtt": [
+                        "CodePipelineServiceRole",
+                        "Arn"
+                    ]
+                },
+          "ArtifactStore": {
+              "Type": "S3",
+              "Location": {"Ref":"SourceBucket"}
+          },
+          "Stages": [
+              {
+                  "Name": "Source",
+                  "Actions": [
+                      {
+                          "Name": "Source",
+                          "ActionTypeId": {
+                              "Category": "Source",
+                              "Owner": "AWS",
+                              "Provider": "S3",
+                              "Version": "1"
+                          },
+                          "RunOrder": 1,
+                          "Configuration": {
+                              "PollForSourceChanges": "true",
+                              "S3Bucket": {
+                                "Ref":"SourceBucket"
+                                },
+                              "S3ObjectKey": {
+                                  "Ref": "SourceObjectKey"
+                              }
+
+                          },
+                          "OutputArtifacts": [
+                              {
+                                  "Name": "SourceArtifact"
+                              }
+                          ]
+
+                      }
+                  ]
+              },
+              {
+                  "Name": "Deploy",
+                  "Actions": [
+                      {
+                          "Name": "Deploy",
+                          "ActionTypeId": {
+                              "Category": "Deploy",
+                              "Owner": "AWS",
+                              "Provider": "ElasticBeanstalk",
+                              "Version": "1"
+                          },
+                          "RunOrder": 1,
+                          "Configuration": {
+                          "ApplicationName":{
+                            "Ref":"sampleApplication"
+                                },
+                             "EnvironmentName":{
+                                  "Ref":"sampleEnvironment"
+                                }
+                          },
+
+                          "InputArtifacts": [
+                              {
+                                  "Name": "SourceArtifact"
+                              }
+                          ]
+
+                      }
+                  ]
+
+              }
+          ]
+
+      }
+    }
+
+  },
+
+  "Outputs" : {
+    "URL" : {
+      "Description" : "URL of the AWS Elastic Beanstalk Environment",
+      "Value" : { "Fn::GetAtt" : ["sampleEnvironment", "EndpointURL"] }
+    }
+  }
+
+}
