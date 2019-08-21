@@ -106,7 +106,7 @@ To get name of bucket
 ```
 BUCKET_NAME=$(aws cloudformation describe-stacks \
 --stack-name app-site \
---query "Stacks[0].Outputs[1].OutputValue" \
+--query "Stacks[0].Outputs[0].OutputValue" \
 --output text)
 
 ```
@@ -128,7 +128,7 @@ Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for L
 ```
 open "http://$(aws cloudformation describe-stacks \
 --stack-name app-site \
---query "Stacks[0].Outputs[0].OutputValue" \
+--query "Stacks[0].Outputs[1].OutputValue" \
 --output text)"
 
 ```
