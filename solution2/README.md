@@ -52,7 +52,7 @@ NAME_BUCKET | NAME_BUCKET | S3 ArtifactStore
 ```
 aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > ~/.ssh/MyKeyPair.pem
 
-chmod 400 /Users/sgladc/.ssh/MyKeyPair.pem
+chmod 400 ~/.ssh/MyKeyPair.pem
 ```
 
 Before running to check AWS CloudFormation template file for syntax errors
