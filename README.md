@@ -2,6 +2,8 @@
 
 
 [Task Junior DevOps Hiring Day] (https://docs.google.com/document/d/1r3OdJlHtYCN9y_VYSI5B0Na-pg-aW4y5eDiKWk-VSAE/edit)
+
+[Solution] (https://github.com/SergiiGlad/awsjuniorhiringday.git )
 ```
 git clone https://github.com/SergiiGlad/awsjuniorhiringday.git
 
