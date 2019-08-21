@@ -1,10 +1,11 @@
 # CREATING INFRASTRUCTURE ON THE CLOUD USING AWS CLOUDFORMATION
 
+
+[Task Junior DevOps Hiring Day] (https://docs.google.com/document/d/1r3OdJlHtYCN9y_VYSI5B0Na-pg-aW4y5eDiKWk-VSAE/edit)
 ```
 git clone https://github.com/SergiiGlad/awsjuniorhiringday.git
 
 ```
-
 
 
 #### AWS CloudFormation is a service that allows the configuring of AWS resources so that developers can focus more on application development, rather than spending time in creating and managing the infrastructure to run an application. It provides a way for the management, provisioning, and updating of AWS resources in an orderly and predictable fashion. In other words, we can say it is a way to enable “AWS Resource Automation.”
