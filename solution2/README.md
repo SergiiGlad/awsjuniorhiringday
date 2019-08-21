@@ -137,7 +137,7 @@ open "http://$(aws cloudformation describe-stacks \
 
 ```
 zip php-sample.zip -j site/*
-aws s3 cp php-sample.zip s3://$NAME_BUCKET
+aws s3 cp php-sample.zip s3://$BUCKET_NAME
 
 ```
 
