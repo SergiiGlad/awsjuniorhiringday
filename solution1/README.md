@@ -85,7 +85,10 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-NAME_BUCKET=$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[0].Outputs[1].OutputValue" --output text)
+NAME_BUCKET=$(aws cloudformation describe-stacks \
+--stack-name demo-site \
+--query "Stacks[0].Outputs[1].OutputValue" \
+--output text)
 
 ```
 
@@ -104,7 +107,10 @@ Confirm subscription on AWS Pipeline and check EmailAddress notification status
 Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for Linux or copy link to browser for other OS ( Link to reference Balancer DNS name)
 
 ```
-open "http://$(aws cloudformation describe-stacks --stack-name demo-site --query "Stacks[0].Outputs[0].OutputValue" --output text)"
+open "http://$(aws cloudformation describe-stacks \
+--stack-name demo-site \
+--query "Stacks[0].Outputs[0].OutputValue" \
+--output text)"
 
 ```
 
