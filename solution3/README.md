@@ -27,7 +27,7 @@ Follow the first steps to install and configure the AWS command line tool [Insta
 
 
 
-## Instructions to use
+## Instructions to use the script files
 
   Use the ./setup.sh script to create a Continuous Deployment.
 
@@ -39,3 +39,7 @@ Follow the first steps to install and configure the AWS command line tool [Insta
 
 
   Use the cleanup.sh to clean AWS resourses
+  
+## Description the steps
+
+[Description](file://Description.md)
