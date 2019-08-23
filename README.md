@@ -52,3 +52,25 @@ The following AWS services are used to create a Continuous Delivery pipeline:
   * SNS
 
     ![alt text](solution2.png)
+    
+## Solution 3
+
+## AWS CloudFormation Sample Template to create load balanced and Auto Scaled Group sample web site running on an Nginx Web Server. The application is configured to span all EC2  and is Auto-Scaled based on the CPU utilization of the web servers. Notifications will be sent to the operator email address on scaling events. The instances are load balanced with a simple health check against the default web page. Automates the integration between AWS Lambda function health site in CodePipeline.
+
+### AWS Services
+---
+The following AWS services are used to create a Continuous Delivery pipeline:
+
+  * CloudFormation
+  * CodeDeploy
+  * CodePipeline
+  * S3
+  * AutoScaling
+  * IAM
+  * SNS
+  * Lambda
+  
+  
+    ![alt text](solution3.png)
+
+
