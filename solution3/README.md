@@ -29,16 +29,16 @@ Follow the first steps to install and configure the AWS command line tool [Insta
 
 ## Instructions to use the script files
 
-  Use the ./setup.sh script to create a Continuous Deployment.
+  Use the ```./setup.sh``` script to create a Continuous Deployment.
 
 
   Change html/index.html for new version site
 
 
-  Use the ./update-site.sh to update site.
+  Use the ```./update-site.sh``` to update site.
 
 
-  Use the cleanup.sh to clean AWS resourses
+  Use the ```cleanup.sh``` to clean AWS resourses
   
 ## Description the steps
 
