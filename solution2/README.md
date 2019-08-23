@@ -36,25 +36,23 @@ cd solution2
 
 Name | Defaults | Notes
 --- | --- | ---
-NAME_STACK | app-site | CloudFormation Stack Name
-REGION | us-east-1 | AWS Region
-APP_NAME | php-sample.zip | Source S3 Bucket
-INSTANCE | t2.micro | EC2 type
-KeyName | MyKeyPair| ssh key to access EC2 instance
-MinSize | 1 | Autoscaling min MinSize
-MaxSize | 3 | Autoscaling max MaxSize
-EmailAddress | nobody@amazone.com | EmailAddress for notification Pipeline state
-NamePipeline | demoPipeline | Code Pipeline
-NAME_BUCKET | NAME_BUCKET | S3 ArtifactStore
+<NAME_STACK> | app-site | CloudFormation Stack Name
+<REGION> | us-east-1 | AWS Region
+<APP_NAME> | php-sample.zip | Source S3 Bucket
+<INSTANCE> | t2.micro | EC2 type
+<KeyName> | MyKeyPair| ssh key to access EC2 instance
+<MinSize> | 1 | Autoscaling min MinSize
+<MaxSize> | 3 | Autoscaling max MaxSize
+<EmailAddress> | nobody@amazone.com | EmailAddress for notification Pipeline state
+<NamePipeline> | demoPipeline | Code Pipeline
+<NAME_BUCKET> | NAME_BUCKET | S3 ArtifactStore
 
 [You should provide own key pair to connect Amazon EC2 using ssh](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
 ```
-aws ec2 create-key-pair --key-name MyKeyPair \
---query 'KeyMaterial' \
---output text > ~/.ssh/MyKeyPair.pem
+aws ec2 create-key-pair --key-name MyKeyPair --query 'KeyMaterial' --output text > /Users/sgladc/.ssh/MyKeyPair.pem
 
-chmod 400 ~/.ssh/MyKeyPair.pem
+chmod 400 /Users/sgladc/.ssh/MyKeyPair.pem
 ```
 
 Before running to check AWS CloudFormation template file for syntax errors
@@ -104,10 +102,7 @@ List S3 bucket name for site ```aws s3 ls```
 
 To get name of bucket
 ```
-BUCKET_NAME=$(aws cloudformation describe-stacks \
---stack-name app-site \
---query "Stacks[0].Outputs[0].OutputValue" \
---output text)
+BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[0].Outputs[1].OutputValue" --output text)
 
 ```
 
@@ -126,10 +121,7 @@ Confirm subscription on AWS Pipeline and check EmailAddress notification status
 Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for Linux or copy link to browser for other OS ( Link to reference Balancer DNS name)
 
 ```
-open "http://$(aws cloudformation describe-stacks \
---stack-name app-site \
---query "Stacks[0].Outputs[1].OutputValue" \
---output text)"
+open "http://$(aws cloudformation describe-stacks --stack-name app-site --query "Stacks[].Outputs[0].OutputValue" --output text)"
 
 ```
 
@@ -137,7 +129,7 @@ open "http://$(aws cloudformation describe-stacks \
 
 ```
 zip php-sample.zip -j site/*
-aws s3 cp php-sample.zip s3://$BUCKET_NAME
+aws s3 cp php-sample.zip s3://$NAME_BUCKET
 
 ```
 
@@ -146,8 +138,7 @@ aws s3 cp php-sample.zip s3://$BUCKET_NAME
 You should empty the S3 Bucket and all versions
 
 ```
-chmod +x delete-all-object-version.sh
-./delete-all-object-version.sh $BUCKET_NAME
+./delete-all-object-version.sh $NAME_BUCKET
 
 ```
 
