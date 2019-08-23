@@ -62,6 +62,8 @@ NAME_BUCKET=$(aws cloudformation describe-stacks \
 --query "Stacks[0].Outputs[0].OutputValue" \
 --output text)
 
+echo $NAME_BUCKET
+
 ```
 
 Create zip file and copy file to S3 bucket
@@ -80,9 +82,10 @@ Visit the website to command ```open ``` for MAC OS or ```google-chrome``` for L
 
 ```
 open "http://$(aws cloudformation describe-stacks \
-  --stack-name demo-site \
+  --stack-name site \
   --query "Stacks[0].Outputs[1].OutputValue" \
   --output text)"
+
 ```
 
 ### Repeat to copy new version of site

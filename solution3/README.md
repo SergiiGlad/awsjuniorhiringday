@@ -19,16 +19,23 @@ git clone https://github.com/SergiiGlad/awsjuniorhiringday.git
 
 cd solution3
 
+
+
 ### Setup cli
 
 Follow the first steps to install and configure the AWS command line tool [Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 
-## Setup
 
-### Use the ./setup.sh script to create a Continuous Deployment.
 
-### Change html/index.html for new version site
+## Instructions to use
 
-### Use the ./update-site.sh to update site.
+  Use the ./setup.sh script to create a Continuous Deployment.
 
-### Use the cleanup.sh to clean AWS resourses
+
+  Change html/index.html for new version site
+
+
+  Use the ./update-site.sh to update site.
+
+
+  Use the cleanup.sh to clean AWS resourses
