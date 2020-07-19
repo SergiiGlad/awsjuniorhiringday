@@ -1,6 +1,6 @@
----
-<p align=center>### AWS Services</p>
----
+___
+<p align=center>AWS Services</p>
+___
 
 ## AWS CloudFormation Sample Template 
 #### Create load balanced and Auto Scaled Group sample web site running on an Nginx Web Server. The application is configured to span all EC2  and is Auto-Scaled based on the CPU utilization of the web servers. Notifications will be sent to the operator email address on scaling events. The instances are load balanced with a simplehealth check against the default web page.
