@@ -1,5 +1,5 @@
 ---
-<p style="text-align: center;"### AWS Services</p>
+<p align=center>### AWS Services</p>
 ---
 
 ## AWS CloudFormation Sample Template 
