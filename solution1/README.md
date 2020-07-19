@@ -1,4 +1,4 @@
-## AWS CloudFormation Sample Template to create load balanced and Auto Scaled Group sample web site running on an Nginx Web Server. The application is configured to span all EC2  and is Auto-Scaled based on the CPU utilization of the web servers. Notifications will be sent to the operator email address on scaling events. The instances are load balanced with a simplehealth check against the default web page.
+## AWS CloudFormation Sample Template #### to create load balanced and Auto Scaled Group sample web site running on an Nginx Web Server. The application is configured to span all EC2  and is Auto-Scaled based on the CPU utilization of the web servers. Notifications will be sent to the operator email address on scaling events. The instances are load balanced with a simplehealth check against the default web page.
 ___
 
 ### AWS Services
@@ -18,7 +18,8 @@ The following AWS services are used to create a Continuous Delivery pipeline:
 
 Follow the first steps to install and configure the AWS command line tool [Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 
-### Setup instructions
+### Stpes instructions 
+_( tested on us-west-2 region )_
 
 Clone the repository of (download the ZIP file)[html://]
 
@@ -28,7 +29,7 @@ git clone https://github.com/SergiiGlad/awsjuniorhiringday.git
 cd solution1
 
 ```
-## before starting
+Before starting
 
 [You should provide own key pair to connect Amazon EC2 using ssh](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
 
@@ -68,7 +69,7 @@ aws cloudformation wait stack-create-complete --stack-name demo-site
 
 ```
 
-Information about created stacks
+Information about created stacks and site name
 ```
 aws cloudformation describe-stacks --stack-name demo-site
 

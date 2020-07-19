@@ -494,7 +494,7 @@
              "# Install the AWS CodeDeploy Agent.\n",
 
              "cd /home/ec2-user\n",
-             "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
+             "wget https://aws-codedeploy-us-west-2.s3.amazonaws.com/latest/install\n",
              "chmod +x ./install\n",
              "sudo ./install auto\n",
              "sudo service codedeploy-agent status\n"
@@ -625,7 +625,7 @@
             "Effect": "Allow",
             "Principal": {
               "Service": [
-                "codedeploy.us-east-1.amazonaws.com",
+                "codedeploy.us-west-2.amazonaws.com",
 
               ]
             },
