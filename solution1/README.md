@@ -65,7 +65,7 @@ aws cloudformation wait stack-create-complete --stack-name demo-site
 
 ```
 
-Information about created stacks and site name
+Information about created stacks and output the url of the website
 ```
 aws cloudformation describe-stacks --stack-name demo-site
 
