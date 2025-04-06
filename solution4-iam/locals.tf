@@ -20,5 +20,10 @@ locals {
       description = "Policy delete S3 buckets"
       file        = "policies/s3-del-bucket.json"
     }
+    s3_deny_bucket = {
+      name        = "S3DenyDeleteBucketPolicy"
+      description = "Policy deny delete S3 test buckets in 5 regions"
+      file        = "policies/s3-deny-bucket.json"
+    }
   }
 }

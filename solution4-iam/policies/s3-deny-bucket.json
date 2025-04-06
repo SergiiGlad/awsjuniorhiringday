@@ -1,0 +1,26 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Deny",
+            "Action": [
+                "s3:DeleteBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::test-bucket-1677123456-abc123",
+                "arn:aws:s3:::test-bucket-1677123456-abc123/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "aws:Region": [
+                        "us-west-2",
+                        "us-east-1",
+                        "eu-west-1",
+                        "ap-southeast-1",
+                        "ap-southeast-2"
+                    ]
+                }
+            }
+        }
+    ]
+}
